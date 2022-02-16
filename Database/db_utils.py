@@ -17,4 +17,4 @@ def open_database( db_path ):
         _DB_CONNECTION = None
 
 def get_connection():
-    return _DB_CONNECTION
+    return sqlite3.connect( 'DATABASE.db')

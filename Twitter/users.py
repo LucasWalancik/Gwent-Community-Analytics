@@ -6,7 +6,6 @@
 
 import os
 import requests
-from sympy import public
 
 class User:
     
@@ -32,7 +31,6 @@ class User:
 
     def to_tuple( self ) -> tuple:
         return(
-            self.id,
             self.name,
             self.username,
             self.created_at,
@@ -42,16 +40,28 @@ class User:
             self.following_count,
             self.tweet_count,
             self.listed_count,
-            self.verified
+            self.verified,
+            self.id
             )
 
+    def get_username( self ):
+        return self.username
+
+    def get_id( self ):
+        return self.id
+
+    def get_protected( self ):
+        return self.protected
 
 
 def _get_bearer_token():
     return  os.environ.get("BEARER_TOKEN")
 
-def _get_url( username ):
+def _get_url_with_username( username ):
     return f"https://api.twitter.com/2/users/by/username/{username}"
+
+def _get_url_with_id( id ):
+    return f'https://api.twitter.com/2/users/{ id }'
 
 def _get_params():
     params = {"user.fields":"created_at,description,protected,public_metrics,verified"}
@@ -62,9 +72,12 @@ def _get_headers():
     headers = { "Authorization":f"Bearer {bearer_token}" }
     return headers
 
-def get_user( username ):
-    
-    url = _get_url( username )
+def get_user_info( username = '', id = '' ):
+    if '' != id:
+        url = _get_url_with_id( id )
+    elif '' != username:
+        url = _get_url_with_username( username )
+
     params = _get_params()
     headers = _get_headers()
 
